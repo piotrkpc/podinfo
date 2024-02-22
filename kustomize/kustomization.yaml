@@ -4,4 +4,4 @@ resources:
   - hpa.yaml
   - deployment.yaml
   - service.yaml
-
+  - tsb-resource.yaml

@@ -1,0 +1,65 @@
+apiVersion: install.tetrate.io/v1alpha1
+kind: IngressGateway
+metadata:
+    namespace: podinfo
+    name: tsb-gateway-podinfo
+spec: {}
+---
+apiVersion: tsb.tetrate.io/v2
+kind: Tenant
+metadata:
+  name: "tetrate"
+  annotations:
+    tsb.tetrate.io/organization: "tetrate"
+spec:
+  description: Test tenant
+---
+apiVersion: tsb.tetrate.io/v2
+kind: Workspace
+metadata:
+  name: podinfo
+  annotations:
+    tsb.tetrate.io/organization: "tetrate"
+    tsb.tetrate.io/tenant: "tetrate"
+spec:
+  namespaceSelector:
+    names:
+      - "*/podinfo"
+---
+apiVersion: gateway.tsb.tetrate.io/v2
+kind: Group
+metadata:
+  name: podinfo-gws
+  annotations:
+    tsb.tetrate.io/organization: "tetrate"
+    tsb.tetrate.io/tenant: "tetrate"
+    tsb.tetrate.io/workspace: podinfo
+spec:
+  namespaceSelector:
+    names:
+      - "*/podinfo"
+  configMode: BRIDGED
+---
+apiVersion: gateway.tsb.tetrate.io/v2
+kind: IngressGateway
+metadata:
+  name: podinfo-gw
+  annotations:
+    tsb.tetrate.io/organization: "tetrate"
+    tsb.tetrate.io/tenant: "tetrate"
+    tsb.tetrate.io/workspace: podinfo
+    tsb.tetrate.io/gatewayGroup: podinfo-gws
+spec:
+  workloadSelector:
+    namespace: podinfo
+    labels:
+      app: tsb-gateway-podinfo
+  http:
+    - name: podinfo
+      port: 80
+      hostname: "podinfo.tetrate.io"
+      routing:
+        rules:
+          - route:
+              host: "podinfo/podinfo.podinfo.svc.cluster.local"
+              port: 9898
