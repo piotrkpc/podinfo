@@ -63,3 +63,14 @@ spec:
           - route:
               host: "podinfo/podinfo.podinfo.svc.cluster.local"
               port: 9898
+      rateLimiting:
+        settings:
+          failClosed: false
+          timeout: 200ms
+          rules:
+            - limit:
+                requestsPerUnit: 3
+                unit: MINUTE
+              dimensions:
+                - remoteAddress:
+                    value: "*"
