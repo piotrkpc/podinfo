@@ -65,7 +65,7 @@ spec:
               port: 9898
       rateLimiting:
         settings:
-          failClosed: true
+          failClosed: false
           timeout: 200ms
           rules:
             - limit:
